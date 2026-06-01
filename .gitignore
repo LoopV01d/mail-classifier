@@ -4,12 +4,4 @@ __pycache__/
 .DS_Store
 run.log
 .pytest_cache/
-output/access/
-output/critical/
-output/documents/
-output/hardware/
-output/info/
-output/software/
-output/spam/
-output/tasks/
-output/unknown/
+output/
