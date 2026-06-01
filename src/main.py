@@ -27,6 +27,11 @@ def main():
     for path, message, error in results:
         if error:
             errors.append((path.name, error))
+            unprocessed_dir = output_path / "unprocessed"
+            unprocessed_dir.mkdir(parents=True, exist_ok=True)
+            dest = unprocessed_dir / path.name
+            if not dest.exists():
+                shutil.move(path, dest)
             continue
 
         category = classifier.classify_mail(message)
