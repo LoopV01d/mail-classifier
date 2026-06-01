@@ -1,6 +1,6 @@
 import pytest
-from src.mail_message.py import MailMessage
-from src.mail_classification.py import MailClassifier
+from src.mail_message import MailMessage
+from src.mail_classification import MailClassifier
 
 def test_spam():
     classifier = MailClassifier()
@@ -61,3 +61,54 @@ def test_unknown():
     )
 
     assert classifier.classify_mail(mail) == "unknown"
+
+def test_software():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Техническая проблема с 1С.txt",
+        "Ошибка при запуске 1С",
+        "d.sergeev@company.com",
+        "Коллеги, добрый день. При попытке запустить 1С программа виснет на этапе загрузки конфигурации. Также вчера выходило уведомление об истечении лицензии. Помогите, пожалуйста, разобраться."
+    )
+
+    assert classifier.classify_mail(mail) == "software"
+
+
+def test_documents():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Согласование закрывающих документов.txt",
+        "Согласование закрывающих документов",
+        "buh@company.com",
+        "Добрый день! Направляем вам скан счета-фактуры и акт выполненных работ по договору №123-А от 01.06.2026. Просим проверить данные и прислать подписанный скан до конца дня."
+    )
+
+    assert classifier.classify_mail(mail) == "documents"
+
+
+def test_tasks():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Поручение по подготовке отчета.txt",
+        "Запрос на подготовку отчета",
+        "i.smirnov@company.com",
+        "Коллеги, добрый день! Необходимо сделать сводную таблицу по продажам за май. Прошу подготовить данные к завтрашнему утру. Требуется также краткий комментарий по отклонениям от плана."
+    )
+
+    assert classifier.classify_mail(mail) == "tasks"
+
+
+def test_info():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Информационное уведомление о работах.txt",
+        "Напоминание: плановые работы в офисе",
+        "hr@company.com",
+        "Уважаемые сотрудники! Информируем вас, что в ближайшую субботу будут проводиться плановые работы по обновлению сети в офисе. Доступ в здание будет ограничен. Спасибо за понимание!"
+    )
+
+    assert classifier.classify_mail(mail) == "info"
