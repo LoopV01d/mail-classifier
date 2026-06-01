@@ -50,6 +50,57 @@ def test_hardware():
 
     assert classifier.classify_mail(mail) == "hardware"
 
+def test_software():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Техническая проблема с 1С.txt",
+        "Ошибка при запуске 1С",
+        "d.sergeev@company.com",
+        "Коллеги, добрый день. При попытке запустить 1С программа виснет на этапе загрузки конфигурации. Также вчера выходило уведомление об истечении лицензии. Помогите, пожалуйста, разобраться."
+    )
+
+    assert classifier.classify_mail(mail) == "software"
+
+
+def test_documents():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Согласование закрывающих документов.txt",
+        "Согласование закрывающих документов",
+        "buh@company.com",
+        "Добрый день! Направляем вам скан счета-фактуры и акт выполненных работ по договору №123-А от 01.06.2026. Просим проверить данные и прислать подписанный скан до конца дня."
+    )
+
+    assert classifier.classify_mail(mail) == "documents"
+
+
+def test_tasks():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Поручение по подготовке отчета.txt",
+        "Запрос на подготовку отчета",
+        "i.smirnov@company.com",
+        "Коллеги, добрый день! Необходимо сделать сводную таблицу по продажам за май. Прошу подготовить данные к завтрашнему утру. Требуется также краткий комментарий по отклонениям от плана."
+    )
+
+    assert classifier.classify_mail(mail) == "tasks"
+
+
+def test_info():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Информационное уведомление о работах.txt",
+        "Напоминание: плановые работы в офисе",
+        "hr@company.com",
+        "Уважаемые сотрудники! Информируем вас, что в ближайшую субботу будут проводиться плановые работы по обновлению сети в офисе. Доступ в здание будет ограничен. Спасибо за понимание!"
+    )
+
+    assert classifier.classify_mail(mail) == "info"
+
 def test_unknown_no_matches():
     classifier = MailClassifier()
 
@@ -67,9 +118,9 @@ def test_unknown_empty():
 
     mail = MailMessage(
         "Общая встреча за чашкой кофе.txt",
-        "Есть время поболтать?",
+        "  ",
         "e.sokolova@personal.ru",
-        " "
+        "  "
     )
 
     assert classifier.classify_mail(mail) == "unknown"
@@ -85,3 +136,27 @@ def test_unknown_wrong_format():
     )
 
     assert classifier.classify_mail(mail) == "unknown"
+
+def test_register():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "ДОСТУП.txt",
+        "ЗАПРОС НА ПРЕДОСТАВЛЕНИЕ ПРАВ В GITLAB",
+        "a.petrov@company.com",
+        "ПРИВЕТСТВУЮ! ДЛЯ ВЫПОЛНЕНИЯ ТЕКУЩИХ ЗАДАЧ МНЕ НЕОБХОДИМО ПОЛУЧИТЬ ПРАВА НА ЗАПИСЬ В РЕПОЗИТОРИИ ПРОЕКТА «ALPHA». МОЯ УЧЕТНАЯ ЗАПИСЬ: A.PETROV. ПРОШУ ВЫДАТЬ ДОСТУП В БЛИЖАЙШЕЕ ВРЕМЯ."
+    )
+
+    assert classifier.classify_mail(mail) == "access"
+
+def test_mixed_categories():
+    classifier = MailClassifier()
+
+    mail = MailMessage(
+        "Срочный запрос доступа для устранения аварии.txt",
+        "СРОЧНО: Ошибка 500 и запрос прав в GitLab",
+        "a.petrov@company.com",
+        "Коллеги, добрый день! Ситуация критичная: наш сервер выдает «Ошибка 500», работа сайта полностью остановлена! Мне необходимо срочно проверить логи, но у меня нет прав на запись в репозиторий. Прошу выдать права в GitLab (учетная запись: a.petrov) прямо сейчас, это вопрос аварийного восстановления!"
+    )
+
+    assert classifier.classify_mail(mail) == "critical"
