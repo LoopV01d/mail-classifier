@@ -38,7 +38,7 @@ def main():
         dest = dest_dir / path.name
         if not dest.exists():
             import shutil
-            shutil.copy2(path, dest)
+            shutil.move(path, dest)
 
     print("\n=== Результаты классификации ===")
     for category, count in sorted(stats.items()):
