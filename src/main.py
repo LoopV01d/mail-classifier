@@ -1,4 +1,3 @@
-import argparse
 import sys
 from pathlib import Path
 
@@ -6,35 +5,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from mail_reader import MailReader
 from mail_classification import MailClassifier
-from category_config import ConfigurableClassifier, ConfigError
 
 def main():
-    parser = argparse.ArgumentParser(description="Сортировщик корпоративной почты")
-    parser.add_argument(
-        '--config',
-        type=str,
-        default=None,
-        help='Путь к JSON-конфигу категорий (расширение). Без флага — захардкоженные правила.'
-    )
-    args = parser.parse_args()
-
     inbox_path = Path(__file__).parent.parent / "inbox"
     output_path = Path(__file__).parent.parent / "output"
 
     print(f"Читаем письма из: {inbox_path}")
 
     reader = MailReader(inbox_path)
-
-    if args.config:
-        try:
-            classifier = ConfigurableClassifier(args.config)
-            print(f"Режим: расширение, конфиг {args.config}")
-        except ConfigError as e:
-            print(f"Ошибка конфига: {e}")
-            sys.exit(2)
-    else:
-        classifier = MailClassifier()
-        print("Режим: базовый (захардкоженные правила)")
+    classifier = MailClassifier()
 
     try:
         results = reader.read_all()

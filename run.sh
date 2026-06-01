@@ -24,7 +24,7 @@ fi
 mkdir -p "$OUTPUT"
 
 echo "" | tee -a "$LOG"
-python3 "$SCRIPT_DIR/src/main.py" "$@" 2>&1 | tee -a "$LOG"
+python3 "$SCRIPT_DIR/src/main.py" 2>&1 | tee -a "$LOG"
 EXIT_CODE=${PIPESTATUS[0]}
 
 echo "" | tee -a "$LOG"
